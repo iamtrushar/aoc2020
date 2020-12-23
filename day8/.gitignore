@@ -1,0 +1,16 @@
+/*.suo
+/.idea/*/*.iml
+/.idea/*/.idea/*.iml
+/.idea/*/.idea/*.xml
+/.idea/*/.idea/dataSources
+/.vs/
+/_*
+
+*.dotCover
+*.user
+bin/
+out/
+obj/
+node_modules/
+
+.DS_Store

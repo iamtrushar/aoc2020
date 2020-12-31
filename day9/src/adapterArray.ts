@@ -1,11 +1,16 @@
 import * as fs from 'fs';
+import * as sw from 'perf_hooks';
 
 
 const input: string = fs.readFileSync("./src/input.txt", "utf8");
 let lines: string[] = input.split("\n");
 
 Part1(lines);
+const t0 = sw.performance.now();
 Part2(lines);
+const t1 = sw.performance.now();
+console.log("Part2 took " + (t1 - t0) + " milliseconds.");
+
 
 function Part1(lines: string[]) {
 
@@ -60,61 +65,39 @@ function Part2(lines: string[]) {
     const lastRating = sortedJolts[sortedJolts.length - 1] + 3;
 
     sortedJolts.push(lastRating);
-    console.log(`Last rating: ${lastRating}`);
 
 
-    let arrangementsSortedJolts: string[] = new Array();
+    let combinations: number = 1;
+    let d : number[] = new Array();
+    for (let i = 0; i < sortedJolts.length; i++) {
 
-
-    let b = 0;
-    do {
-
-        let joltsDiff: number[] = new Array();
-        let a = 0;
-
-        const cloneSortedJolts = Array.from(sortedJolts);
-        do {
-
-            for (let i = 0; i < sortedJolts.length; i++) {
-
-                let diff = 0;
-                if (i == 0) {
-                    diff = sortedJolts[i];
-                }
-                else {
-                    diff = sortedJolts[i] - sortedJolts[i - 1];
-                }
-
-                if (diff == 3 || diff == 2 || diff == 1) {
-                    joltsDiff.push(sortedJolts[i]);
-                }
-                else {
-                    break;
-                }
-            }
-
-            if (joltsDiff[joltsDiff.length - 1] == lastRating) {
-                const j = joltsDiff.join(",");
-                if (arrangementsSortedJolts.includes(j) == false) {
-                    arrangementsSortedJolts.push(j);
-                    //console.log(j);
-                }
-            }
-
-            sortedJolts = Array.from(cloneSortedJolts);
-            joltsDiff = [];
-            sortedJolts.splice(a++, 1);
-        } while (a <= sortedJolts.length - 1);
-
-        if (++b < arrangementsSortedJolts.length) {
-            sortedJolts = [];
-            arrangementsSortedJolts[b].split(",").forEach(ele => sortedJolts.push(+ele));
+        let diff = 0;
+        if (i == 0) {
+            diff = sortedJolts[i];
         }
-    } while (b < arrangementsSortedJolts.length);
+        else {
+            diff = sortedJolts[i] - sortedJolts[i - 1];
+        }
 
-    console.log(`Total arrangements: ${arrangementsSortedJolts.length}`);
-    // arrangementsSortedJolts.forEach(arrayElement => {
-    //     console.log(arrayElement);
-    // });
+        if (diff == 1 && (i + 1) < sortedJolts.length) {
+            if ((sortedJolts[i + 1] - sortedJolts[i]) == 1) {
+                d.push(sortedJolts[i])
+            }
+            else{
+                const l = d.length;
+                if(l == 3){
+                    combinations = combinations * 7;
+                }
+                else if( l == 2){
+                    combinations = combinations * 4;
+                }
+                else if (l == 1){
+                    combinations = combinations * 2;
+                }
+                d = [];
+            }
+        }
+    }
 
+    console.log(`Combinations: ${combinations}`);
 }
